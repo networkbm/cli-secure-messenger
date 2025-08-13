@@ -7,8 +7,6 @@ A minimal, end-to-end encrypted CLI messenger with ephemeral (self-destructing) 
 - **Ephemeral**: Messages expire server-side after **TTL** (default 30s). Client does not persist plaintext.
 - **Passcode-gated reading**: Without the correct passcode, ciphertext cannot be decrypted (server never sees plaintext).
 
-> This is a teaching/demo project, **not** a production-ready secure messenger. See Security Notes below.
-
 ## Quick Start
 
 ### 1) Install
