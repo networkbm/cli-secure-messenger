@@ -54,8 +54,6 @@ python client.py --server ws://localhost:8765 --user alice --peer bob --passcode
 
 - This PoC uses a **shared passcode** and a deterministic salt derived from usernames to derive the symmetric key (Argon2id). Choose a strong passcode.
 - Messages are end-to-end encrypted; the relay server cannot read their contents.
-- **Forward secrecy** is limited. For production, add an **X25519** ephemeral key exchange per session or implement the **Double Ratchet** (Signal protocol).
-- **Authentication** is minimal (usernames are not verified). In production, add proper identity verification and out-of-band key verification (e.g., safety numbers/QR).
 - Transport security: enabling **TLS (wss://)** protects metadata and prevents passive interception at the transport layer. E2E already protects message content.
 - The server stores only ciphertext and deletes messages after TTL. This is **in-memory** and ephemeral in this PoC.
 - Client does **not** persist plaintext messages; once printed, they're gone unless your terminal scrollback saves them.
