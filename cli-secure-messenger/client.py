@@ -25,7 +25,7 @@ def derive_key(passcode: str, conversation_id: str) -> bytes:
         secret=passcode.encode('utf-8'),
         salt=salt,
         time_cost=2,
-        memory_cost=64 * 1024,  # 64 MB
+        memory_cost=64 * 1024,
         parallelism=2,
         hash_len=32,
         type=Type.ID
@@ -35,10 +35,8 @@ def derive_key(passcode: str, conversation_id: str) -> bytes:
 
 def encrypt_message(key: bytes, plaintext: str) -> dict:
     box = SecretBox(key)
-    nonce = nacl_random(SecretBox.NONCE_SIZE)  # 24 bytes
+    nonce = nacl_random(SecretBox.NONCE_SIZE)
     ct = box.encrypt(plaintext.encode('utf-8'), nonce)
-    # SecretBox.encrypt returns nonce+ciphertext+mac; we already supplied nonce,
-    # so ct.ciphertext includes MAC. We'll send nonce separately for clarity.
     ciphertext = ct.ciphertext
     return {
         "nonce": base64.b64encode(nonce).decode('ascii'),
@@ -128,13 +126,10 @@ async def main():
     conversation_id = "|".join(sorted([args.user, args.peer]))
     key = derive_key(args.passcode, conversation_id)
 
-    # Optional TLS: if using self-signed cert, you may need to disable verify (NOT recommended for prod).
     ssl_context = None
     if args.server.startswith("wss://"):
         import ssl
         ssl_context = ssl.create_default_context()
-        # For demo with self-signed certs, you can temporarily allow insecure (uncomment next line):
-        # ssl_context.check_hostname = False; ssl_context.verify_mode = ssl.CERT_NONE
 
     async with websockets.connect(args.server, ssl=ssl_context) as ws:
         # Identify to server
